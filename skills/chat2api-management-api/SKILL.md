@@ -14,6 +14,16 @@ Use this skill before live proxy testing that needs `/v0/management/*`.
 - Snapshot config before mutation and restore it in cleanup.
 - Do not clear sessions unless the user explicitly asks for cleanup.
 
-## Planned Script
+## Script
 
-A later implementation task adds `scripts/management-api.mjs`. Until then, use this Skill as the documented boundary and rules for that capability.
+Use `scripts/management-api.mjs` for repeatable management API setup, observation, and cleanup commands.
+
+## Commands
+
+```bash
+CHAT2API_MGMT_SECRET=mgmt_xxx node skills/chat2api-management-api/scripts/management-api.mjs snapshot
+CHAT2API_MGMT_SECRET=mgmt_xxx node skills/chat2api-management-api/scripts/management-api.mjs create-api-key --name codex-live-test
+CHAT2API_MGMT_SECRET=mgmt_xxx node skills/chat2api-management-api/scripts/management-api.mjs delete-api-key --id key-id
+```
+
+Use `--dry-run` to verify command shape without network calls.
