@@ -193,7 +193,7 @@
     "clearChatsWarning": "此操作将删除该供应商网站上的所有对话历史，且无法恢复。",
     "clearChatsSuccess": "对话记录已清除",
     "clearChatsFailed": "清除对话记录失败",
-    "clearChatsOnlyForQwenAI": "此功能仅支持 Qwen AI、MiniMax、Z.ai、Perplexity、DeepSeek、GLM 和 Mimo 供应商",
+    "clearChatsOnlyForQwenAI": "此功能仅支持 Kimi、Qwen、Qwen AI、MiniMax、Z.ai、Perplexity、DeepSeek、GLM 和 Mimo 供应商",
     "saving": "保存中...",
     "saveChanges": "保存更改",
     "required": "必填",
@@ -249,7 +249,7 @@
   },
   "glm": {
     "name": "GLM",
-    "description": "智谱清言 AI 助手，支持 GLM-5 旗舰模型、深度思考和联网搜索",
+    "description": "智谱清言 AI 助手，支持 GLM-5.1 旗舰模型、深度思考和联网搜索",
     "refreshToken": "刷新令牌",
     "refreshTokenPlaceholder": "请输入智谱清言刷新令牌",
     "refreshTokenHelp": "从智谱清言网页版获取 chatglm_refresh_token，可在浏览器开发者工具 Application -> Cookie 中找到"

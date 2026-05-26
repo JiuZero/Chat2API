@@ -5,7 +5,9 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 import { deepseekConfig } from '../../src/main/providers/builtin/deepseek.ts'
+import { glmConfig } from '../../src/main/providers/builtin/glm.ts'
 import { kimiConfig } from '../../src/main/providers/builtin/kimi.ts'
+import { minimaxConfig } from '../../src/main/providers/builtin/minimax.ts'
 import { mimoConfig } from '../../src/main/providers/builtin/mimo.ts'
 import {
   DEEPSEEK_PRIMARY_MODELS,
@@ -170,8 +172,30 @@ test('DeepSeek provider config uses Web 2.0 browser headers', () => {
   assert.match(deepseekConfig.headers['Sec-Ch-Ua'], /Chromium";v="148/)
 })
 
+test('GLM, Kimi, and MiniMax built-in default models match current web providers', () => {
+  assert.deepEqual(glmConfig.supportedModels, ['GLM-5.1'])
+  assert.equal(glmConfig.modelMappings?.['GLM-5.1'], 'glm-5.1')
+
+  assert.deepEqual(kimiConfig.supportedModels, ['Kimi-K2.6'])
+  assert.equal(kimiConfig.modelMappings?.['Kimi-K2.6'], 'kimi-k2.6')
+  assert.equal(kimiConfig.modelMappings?.['Kimi-K2.5'], undefined)
+
+  assert.deepEqual(minimaxConfig.supportedModels, ['MiniMax-M2.7'])
+  assert.deepEqual(minimaxConfig.modelMappings, {
+    'MiniMax-M2.7': 'MiniMax-M2.7',
+  })
+
+  const minimaxAdapterSource = readFileSync(
+    join(root, 'src/main/proxy/adapters/minimax.ts'),
+    'utf8',
+  )
+  assert.match(minimaxAdapterSource, /this\.model = 'MiniMax-M2\.7'/)
+  assert.match(minimaxAdapterSource, /request\.model \|\| 'MiniMax-M2\.7'/)
+  assert.doesNotMatch(minimaxAdapterSource, /MiniMax-M2\.5/)
+})
+
 test('Kimi K2.6 model mapping reaches the web chat request payload', () => {
-  assert.deepEqual(kimiConfig.supportedModels, ['Kimi-K2.6', 'Kimi-K2.5'])
+  assert.deepEqual(kimiConfig.supportedModels, ['Kimi-K2.6'])
   assert.equal(kimiConfig.modelMappings?.['Kimi-K2.6'], 'kimi-k2.6')
   assert.equal(resolveKimiScenario('kimi-k2.6'), 'SCENARIO_K2D6')
   assert.equal(resolveKimiScenario('kimi-k2.5'), 'SCENARIO_K2D5')
@@ -192,6 +216,32 @@ test('Kimi K2.6 model mapping reaches the web chat request payload', () => {
   assert.equal(frame.readUInt8(0), 0)
   assert.equal(frame.readUInt32BE(1), frame.length - 5)
   assert.equal(JSON.parse(frame.subarray(5).toString('utf8')).scenario, 'SCENARIO_K2D6')
+})
+
+test('Kimi and domestic Qwen support account-level chat cleanup', () => {
+  const handlersSource = readFileSync(join(root, 'src/main/ipc/handlers.ts'), 'utf8')
+  const accountListSource = readFileSync(join(root, 'src/renderer/src/components/providers/AccountList.tsx'), 'utf8')
+  const kimiAdapterSource = readFileSync(join(root, 'src/main/proxy/adapters/kimi.ts'), 'utf8')
+  const qwenAdapterSource = readFileSync(join(root, 'src/main/proxy/adapters/qwen.ts'), 'utf8')
+
+  assert.match(handlersSource, /import \{ KimiAdapter \} from '\.\.\/proxy\/adapters\/kimi'/)
+  assert.match(handlersSource, /import \{ QwenAdapter \} from '\.\.\/proxy\/adapters\/qwen'/)
+  assert.match(handlersSource, /kimi: async \(provider, account\) => new KimiAdapter\(provider, account\)\.deleteAllChats\(\)/)
+  assert.match(handlersSource, /qwen: async \(provider, account\) => new QwenAdapter\(provider, account\)\.deleteAllChats\(\)/)
+  assert.match(accountListSource, /providerId === 'kimi'/)
+  assert.match(accountListSource, /providerId === 'qwen'/)
+
+  assert.match(kimiAdapterSource, /async deleteAllChats\(\): Promise<boolean>/)
+  assert.match(kimiAdapterSource, /kimi\.chat\.v1\.ChatService\/ListChats/)
+  assert.match(kimiAdapterSource, /kimi\.chat\.v1\.ChatService\/BatchDeleteChats/)
+  assert.match(kimiAdapterSource, /chat_ids/)
+
+  assert.match(qwenAdapterSource, /async deleteAllChats\(\): Promise<boolean>/)
+  assert.match(qwenAdapterSource, /api\/v2\/session\/page\/list/)
+  assert.match(qwenAdapterSource, /api\/v1\/session\/delete\/batch/)
+  assert.match(qwenAdapterSource, /api\/v2\/file\/record\/delete/)
+  assert.match(qwenAdapterSource, /session_ids/)
+  assert.match(qwenAdapterSource, /sessionIds/)
 })
 
 test('Mimo model names and conversation flow match Xiaomi AI Studio web requests', () => {
@@ -231,7 +281,7 @@ test('Mimo model names and conversation flow match Xiaomi AI Studio web requests
   assert.match(forwardMimoSource, /await deleteSessionCallback\(conversationId\)/)
 })
 
-test('Add provider dialog templates match the updated DeepSeek and Kimi flows', () => {
+test('Add provider dialog templates match the updated built-in provider flows', () => {
   const source = readFileSync(
     join(root, 'src/renderer/src/components/providers/AddProviderDialog.tsx'),
     'utf8',
@@ -240,8 +290,13 @@ test('Add provider dialog templates match the updated DeepSeek and Kimi flows', 
   assert.match(source, /supportedModels:\s*\['deepseek-v4-flash', 'deepseek-v4-pro'\]/)
   assert.doesNotMatch(source, /supportedModels:\s*\['deepseek-v4-pro'.*'deepseek-reasoner'/s)
   assert.doesNotMatch(source, /DeepSeek-V3\.2|DeepSeek-R1|deepseek-reasoner/)
-  assert.match(source, /supportedModels: \['Kimi-K2\.6', 'Kimi-K2\.5'\]/)
+  assert.match(source, /supportedModels: \['GLM-5\.1'\]/)
+  assert.match(source, /'GLM-5\.1': 'glm-5\.1'/)
+  assert.match(source, /supportedModels: \['Kimi-K2\.6'\]/)
   assert.match(source, /'Kimi-K2\.6': 'kimi-k2\.6'/)
+  assert.doesNotMatch(source, /'Kimi-K2\.5': 'kimi-k2\.5'/)
+  assert.match(source, /supportedModels: \['MiniMax-M2\.7'\]/)
+  assert.match(source, /'MiniMax-M2\.7': 'MiniMax-M2\.7'/)
   assert.match(source, /'Content-Type': 'application\/connect\+json'/)
   assert.doesNotMatch(source, /supportedModels: \['kimi', 'kimi-search', 'kimi-research', 'kimi-k1'\]/)
 })

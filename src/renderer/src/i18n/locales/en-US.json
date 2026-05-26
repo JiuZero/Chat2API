@@ -193,7 +193,7 @@
     "clearChatsWarning": "This will delete all conversation history on this provider's website and cannot be undone.",
     "clearChatsSuccess": "Chat history cleared successfully",
     "clearChatsFailed": "Failed to clear chat history",
-    "clearChatsOnlyForQwenAI": "This feature is only available for Qwen AI, MiniMax, Z.ai, Perplexity, DeepSeek, GLM, and Mimo providers",
+    "clearChatsOnlyForQwenAI": "This feature is only available for Kimi, Qwen, Qwen AI, MiniMax, Z.ai, Perplexity, DeepSeek, GLM, and Mimo providers",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
     "required": "Required",
@@ -249,7 +249,7 @@
   },
   "glm": {
     "name": "GLM",
-    "description": "Zhipu Qingyan AI Assistant, supports GLM-5 flagship model, deep thinking and web search",
+    "description": "Zhipu Qingyan AI Assistant, supports GLM-5.1 flagship model, deep thinking and web search",
     "refreshToken": "Refresh Token",
     "refreshTokenPlaceholder": "Enter chatglm_refresh_token",
     "refreshTokenHelp": "Get chatglm_refresh_token from Zhipu Qingyan web version, found in browser DevTools Application -> Cookie"

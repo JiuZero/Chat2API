@@ -240,14 +240,9 @@ export function AddProviderDialog({
       apiEndpoint: 'https://chatglm.cn/api',
       enabled: true,
       description: t('glm.description'),
-      supportedModels: ['GLM-5', 'GLM-5-Flash', 'GLM-4-Plus', 'GLM-4-Flash', 'GLM-Zero-Preview', 'GLM-DeepResearch'],
+      supportedModels: ['GLM-5.1'],
       modelMappings: {
-        'GLM-5': 'glm-5',
-        'GLM-5-Flash': 'glm-5-flash',
-        'GLM-4-Plus': 'glm-4-plus',
-        'GLM-4-Flash': 'glm-4-flash',
-        'GLM-Zero-Preview': 'glm-zero-preview',
-        'GLM-DeepResearch': 'glm-deepresearch',
+        'GLM-5.1': 'glm-5.1',
       },
       headers: {
         'Content-Type': 'application/json',
@@ -276,10 +271,9 @@ export function AddProviderDialog({
       apiEndpoint: 'https://www.kimi.com',
       enabled: true,
       description: t('kimi.description'),
-      supportedModels: ['Kimi-K2.6', 'Kimi-K2.5'],
+      supportedModels: ['Kimi-K2.6'],
       modelMappings: {
         'Kimi-K2.6': 'kimi-k2.6',
-        'Kimi-K2.5': 'kimi-k2.5',
       },
       headers: {
         'Content-Type': 'application/connect+json',
@@ -308,7 +302,10 @@ export function AddProviderDialog({
       apiEndpoint: 'https://agent.minimaxi.com',
       enabled: true,
       description: t('minimax.description'),
-      supportedModels: ['MiniMax-M2.5'],
+      supportedModels: ['MiniMax-M2.7'],
+      modelMappings: {
+        'MiniMax-M2.7': 'MiniMax-M2.7',
+      },
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

@@ -17,9 +17,11 @@ import { generateManagementSecret } from '../proxy/middleware/managementAuth'
 import { UpdaterManager } from '../updater'
 import { DeepSeekAdapter } from '../proxy/adapters/deepseek'
 import { GLMAdapter } from '../proxy/adapters/glm'
+import { KimiAdapter } from '../proxy/adapters/kimi'
 import { MimoAdapter } from '../proxy/adapters/mimo'
 import { MiniMaxAdapter } from '../proxy/adapters/minimax'
 import { PerplexityAdapter } from '../proxy/adapters/perplexity'
+import { QwenAdapter } from '../proxy/adapters/qwen'
 import { QwenAiAdapter } from '../proxy/adapters/qwen-ai'
 import { ZaiAdapter } from '../proxy/adapters/zai'
 import type { Provider, Account, ProxyStatus, ProviderCheckResult, OAuthResult, AuthType, CredentialField, LogLevel, LogEntry, ProviderVendor, AppConfig } from '../../shared/types'
@@ -31,6 +33,8 @@ let proxyStartTime: number | null = null
 const updaterManager = UpdaterManager.getInstance()
 
 const clearChatsHandlers: Record<string, (provider: Provider, account: Account) => Promise<boolean>> = {
+  kimi: async (provider, account) => new KimiAdapter(provider, account).deleteAllChats(),
+  qwen: async (provider, account) => new QwenAdapter(provider, account).deleteAllChats(),
   'qwen-ai': async (provider, account) => new QwenAiAdapter(provider, account).deleteAllChats(),
   minimax: async (provider, account) => new MiniMaxAdapter(provider, account).deleteAllChats(),
   zai: async (provider, account) => new ZaiAdapter(provider, account).deleteAllChats(),
