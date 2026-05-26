@@ -13,6 +13,6 @@ Use this skill when model coverage must follow the live `/v1/models` surface.
 - Use management API data for attribution and cleanup.
 - Keep provider fail-fast opt-in.
 
-## Script
+## Planned Script
 
-Use `scripts/run-model-matrix.mjs`.
+A later implementation task adds `scripts/run-model-matrix.mjs`. Until then, use this Skill as the documented boundary and rules for that capability.

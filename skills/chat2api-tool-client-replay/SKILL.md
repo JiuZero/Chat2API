@@ -13,6 +13,6 @@ Use this skill to replay fixture scenarios for clients such as Cherry Studio, ge
 - Validate stream and non-stream behavior separately.
 - Use profiles for client-specific prompt-protocol expectations.
 
-## Script
+## Planned Script
 
-Use `scripts/replay-client-fixture.mjs`.
+A later implementation task adds `scripts/replay-client-fixture.mjs`. Until then, use this Skill as the documented boundary and rules for that capability.

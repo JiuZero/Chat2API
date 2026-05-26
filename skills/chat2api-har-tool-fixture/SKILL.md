@@ -13,6 +13,6 @@ Use this skill when a recorded client HAR should become reusable test input.
 - Put client-specific expectations in replay profiles, not in HAR extraction.
 - Remove secrets and volatile headers from generated fixtures.
 
-## Script
+## Planned Script
 
-Use `scripts/extract-har-fixtures.mjs`.
+A later implementation task adds `scripts/extract-har-fixtures.mjs`. Until then, use this Skill as the documented boundary and rules for that capability.

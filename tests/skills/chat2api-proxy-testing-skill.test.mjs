@@ -35,17 +35,27 @@ const skillPaths = [
   },
 ]
 
+const focusedSkillFiles = skillPaths.filter(({ name }) => name !== 'chat2api-proxy-testing').map(({ file }) => file)
+
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 test('versioned Chat2API testing skills exist and have trigger-only descriptions', () => {
   for (const { file, name, description } of skillPaths) {
     const text = fs.readFileSync(file, 'utf8')
+    // Skill frontmatter is a discovery contract; keep exact names and descriptions stable.
     assert.match(
       text,
       new RegExp(`^---\\nname: ${escapeRegExp(name)}\\ndescription: ${escapeRegExp(description)}\\n---`, 'm'),
       file,
     )
     assert.doesNotMatch(text, /T[B]D|FI[X]ME|deferred work/, file)
+  }
+})
+
+test('focused skill docs do not reference scripts as active instructions', () => {
+  for (const file of focusedSkillFiles) {
+    const text = fs.readFileSync(file, 'utf8')
+    assert.doesNotMatch(text, /Use `scripts\//, file)
   }
 })
 

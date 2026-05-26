@@ -14,6 +14,6 @@ Use this skill before live proxy testing that needs `/v0/management/*`.
 - Snapshot config before mutation and restore it in cleanup.
 - Do not clear sessions unless the user explicitly asks for cleanup.
 
-## Script
+## Planned Script
 
-Use `scripts/management-api.mjs` for repeatable operations.
+A later implementation task adds `scripts/management-api.mjs`. Until then, use this Skill as the documented boundary and rules for that capability.
